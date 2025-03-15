@@ -6,12 +6,11 @@ import {
   ServerStackIcon,
   RectangleStackIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Notifications, PendingJob, ApprovedJob } from "@/pages/dashboard";
+import { Home, Profile, Tables, Notifications, PendingJob, ApprovedJob, CompanyProfile, CandidateProfile } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
+import { InterviewSchedule } from "./pages/manager/InterviewSchedule";
 import LockedJob from "./pages/dashboard/LockedJob";
 import ExpiredJob from "./pages/dashboard/ExpiredJob";
-import CompanyProfile from "./pages/dashboard/CompanyProfile";
-import CandidateProfile from "./pages/dashboard/CandidateProfile";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -19,6 +18,7 @@ const icon = {
 
 export const routes = [
   {
+    title: "Quản lý hồ sơ",
     layout: "dashboard",
     pages: [
       {
@@ -46,6 +46,18 @@ export const routes = [
         element: <CandidateProfile />,
       },
       {
+        icon: <InformationCircleIcon {...icon} />,
+        name: "notifications",
+        path: "/notifications",
+        element: <Notifications />,
+      },
+    ],
+  },
+  {
+    title: "Quản lý lịch hẹn",
+    layout: "dashboard",
+    pages: [
+      {
         icon: <TableCellsIcon {...icon} />,
         name: "Tin đã duyệt",
         path: "/job_approved",
@@ -69,11 +81,17 @@ export const routes = [
         path: "/job_expired",
         element: <ExpiredJob />,
       },
+    ],
+  },
+  {
+    title: "Quản lý lịch hẹn phỏng vấn",
+    layout: "manager",
+    pages: [
       {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "notifications",
-        path: "/notifications",
-        element: <Notifications />,
+        icon: <TableCellsIcon {...icon} />,
+        name: "Lịch hẹn phỏng vấn",
+        path: "/interview_schedule",
+        element: <InterviewSchedule />,
       },
     ],
   },
