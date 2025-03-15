@@ -10,6 +10,8 @@ import { Home, Profile, Tables, Notifications, PendingJob, ApprovedJob } from "@
 import { SignIn, SignUp } from "@/pages/auth";
 import LockedJob from "./pages/dashboard/LockedJob";
 import ExpiredJob from "./pages/dashboard/ExpiredJob";
+import CompanyProfile from "./pages/dashboard/CompanyProfile";
+import CandidateProfile from "./pages/dashboard/CandidateProfile";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -30,6 +32,18 @@ export const routes = [
         name: "profile",
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Hồ sơ doanh nghiệp",
+        path: "/company_profile",
+        element: <CompanyProfile />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Hồ sơ ứng viên",
+        path: "/candidate_profile",
+        element: <CandidateProfile />,
       },
       {
         icon: <TableCellsIcon {...icon} />,

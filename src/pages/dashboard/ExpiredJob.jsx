@@ -34,29 +34,6 @@ import {
       fetchJobsAndCompanies();
     }, []);
   
-    const handleCloseJob = async (jobId) => {
-      try {
-        const jobsCollection = collection(db, 'tblTinTuyenDung');
-        const q = query(jobsCollection, where("sMaTinTuyenDung", "==", jobId));
-  
-        const jobSnapshot = await getDocs(q);
-  
-        if (jobSnapshot.empty) {
-          console.log("No such document with sMaTinTuyenDung:", jobId);
-          return;
-        }
-  
-        const jobDocRef = doc(db, 'tblTinTuyenDung', jobSnapshot.docs[0].id);
-  
-        await updateDoc(jobDocRef, {
-          sCoKhoa: 1,
-        });
-        console.log(`Job with ID: ${jobId} has been closed and sCoKhoa is set to "Có"`);
-      } catch (error) {
-        console.error("Error closing job: ", error);
-      }
-    };
-  
     return (
       <div className="mt-12 mb-8 flex flex-col gap-12">
         <Card>
