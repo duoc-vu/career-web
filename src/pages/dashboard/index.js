@@ -5,7 +5,6 @@ export * from "@/pages/dashboard/notifications";
 export * from "@/pages/dashboard/CompanyProfile";
 export * from "@/pages/dashboard/CandidateProfile";
 export * from "@/pages/dashboard/ApprovedJob";
-export * from "@/pages/dashboard/PendingJob";
 export * from "@/pages/dashboard/LockedJob";
 export * from "@/pages/dashboard/ExpiredJob";
 export * from "@/pages/manager/InterviewSchedule";

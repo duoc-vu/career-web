@@ -8,21 +8,20 @@ import {
 import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
 import { collection, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
+import { useNavigate } from "react-router-dom";
 
 export function ApprovedJob() {
   const [jobs, setJobs] = useState([]);
   const [companies, setCompanies] = useState({});
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchJobsAndCompanies = async () => {
-      // Fetch Jobs with status "Không" (open status)
       const jobsCollection = collection(db, "tblTinTuyenDung");
-      const q = query(jobsCollection, where("sCoKhoa", "==", 1)); // sCoKhoa = 1 for open status
+      const q = query(jobsCollection, where("sCoKhoa", "==", 1)); 
       const jobSnapshot = await getDocs(q);
       const jobList = jobSnapshot.docs.map(doc => doc.data());
       setJobs(jobList);
 
-      // Fetch companies based on sMaDoanhNghiep in the jobs
       const companiesCollection = collection(db, "tblDoanhNghiep");
       const companiesSnapshot = await getDocs(companiesCollection);
       let companiesData = {};
@@ -95,7 +94,7 @@ export function ApprovedJob() {
             </thead>
             <tbody>
               {jobs.map((job, key) => {
-                const company = companies[job.sMaDoanhNghiep];  // Lấy thông tin công ty từ companies
+                const company = companies[job.sMaDoanhNghiep]; 
                 const className = `py-3 px-5 ${key === jobs.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
                 return (
@@ -111,13 +110,11 @@ export function ApprovedJob() {
                       </Typography>
                     </td>
                     <td className={className}>
-                      {/* Hiển thị ảnh đại diện công ty nếu có */}
                       <Typography className="text-xs font-normal text-blue-gray-500">
                         {company ? <img src={company.sAnhDaiDien} alt="Avatar" className="h-10 w-10 rounded-full" /> : "No Avatar"}
                       </Typography>
                     </td>
                     <td className={className}>
-                      {/* Hiển thị tên công ty nếu có */}
                       <Typography className="text-xs font-normal text-blue-gray-500">
                         {company ? company.sTenDoanhNghiep : "No Company Name"}
                       </Typography>
@@ -138,7 +135,7 @@ export function ApprovedJob() {
                           variant="outlined"
                           color="blue"
                           size="sm"
-                          onClick={() => handleViewDetails(job.sMaTinTuyenDung)}
+                          onClick={() => navigate(`/job_detail/${job.sMaTinTuyenDung}`)}
                         >
                           Xem chi tiết
                         </Button>
