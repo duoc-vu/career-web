@@ -9,11 +9,14 @@ import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
 import { collection, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "@/context";
 
 export function ApprovedJob() {
   const [jobs, setJobs] = useState([]);
   const [companies, setCompanies] = useState({});
   const navigate = useNavigate();
+  const { searchTerm } = useAppContext();
+
   useEffect(() => {
     const fetchJobsAndCompanies = async () => {
       const jobsCollection = collection(db, "tblTinTuyenDung");
@@ -33,6 +36,10 @@ export function ApprovedJob() {
 
     fetchJobsAndCompanies();
   }, []);
+
+  const filteredJobs = jobs.filter((job) =>
+    job.sMaTinTuyenDung.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleCloseJob = async (jobId) => {
     try {
@@ -93,7 +100,7 @@ export function ApprovedJob() {
               </tr>
             </thead>
             <tbody>
-              {jobs.map((job, key) => {
+              {filteredJobs.map((job, key) => {
                 const company = companies[job.sMaDoanhNghiep]; 
                 const className = `py-3 px-5 ${key === jobs.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 

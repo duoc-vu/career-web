@@ -9,11 +9,13 @@ import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
 import { collection, getDocs, query, where, updateDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "@/context";
 
 export function CompanyProfile() {
   const [activeCompanies, setActiveCompanies] = useState([]);
   const [lockedCompanies, setLockedCompanies] = useState([]);
   const navigate = useNavigate();
+  const { searchTerm } = useAppContext();
 
   useEffect(() => {
     fetchCompanies();
@@ -60,6 +62,13 @@ export function CompanyProfile() {
     return taiKhoanSnapshot.docs.map(doc => doc.data().sMaTaiKhoan);
   };
 
+  const filteredActiveCompanies = activeCompanies.filter((company) =>
+    company.sMaDoanhNghiep.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+  const filteredLockedCompanies = lockedCompanies.filter((company) =>
+    company.sMaDoanhNghiep.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleViewDetails = (companyId) => {
     console.log(`check ${companyId}`)
@@ -144,7 +153,7 @@ export function CompanyProfile() {
               </tr>
             </thead>
             <tbody>
-              {activeCompanies.map((company, key) => {
+              {filteredActiveCompanies.map((company, key) => {
                 console.log("Company Data:", company.sMaDoanhNghiep); // Kiểm tra dữ liệu từng công ty
                 return (
                   <tr key={key}>
@@ -218,7 +227,7 @@ export function CompanyProfile() {
               </tr>
             </thead>
             <tbody>
-              {lockedCompanies.map((company, key) => (
+              {filteredLockedCompanies.map((company, key) => (
                 <tr key={key}>
                   <td className="py-3 px-5">{company.sMaDoanhNghiep}</td>
                   <td className="py-3 px-5">{company.sTenDoanhNghiep}</td>

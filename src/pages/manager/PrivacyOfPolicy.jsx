@@ -8,8 +8,10 @@ import {
 import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
 import { collection, getDocs, query, updateDoc, doc } from "firebase/firestore";
+import { useAppContext } from "@/context";
 export function PrivacyOfPolicy() {
   const [privacys, setPrivacys] = useState([]);
+  const { searchTerm } = useAppContext();
 
   useEffect(() => {
     const fetchPrivacy = async () => {
@@ -25,6 +27,10 @@ export function PrivacyOfPolicy() {
 
     fetchPrivacy();
   }, []);
+
+  const filteredPrivacys = privacys.filter((privacy) =>
+    privacy.sMaChinhSach.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleToggleStatus = async (id, currentStatus) => {
     try {
@@ -76,7 +82,7 @@ export function PrivacyOfPolicy() {
               </tr>
             </thead>
             <tbody>
-              {privacys.map((privacy, key) => {
+              {filteredPrivacys.map((privacy, key) => {
                 const className = `py-3 px-5 ${key === privacy.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
                 return (
@@ -109,8 +115,8 @@ export function PrivacyOfPolicy() {
                     <td className={className}>
                       <Typography
                         className={`text-xs font-semibold ${privacy.bTrangThai
-                            ? "text-green-500"
-                            : "text-red-500"
+                          ? "text-green-500"
+                          : "text-red-500"
                           }`}
                       >
                         {privacy.bTrangThai

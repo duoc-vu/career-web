@@ -10,11 +10,13 @@ import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
 import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "@/context";
 
 export function ExpiredJob() {
   const [jobs, setJobs] = useState([]);
   const [companies, setCompanies] = useState({});
   const navigate = useNavigate();
+  const { searchTerm } = useAppContext();
 
   useEffect(() => {
     const fetchJobsAndCompanies = async () => {
@@ -35,6 +37,10 @@ export function ExpiredJob() {
 
     fetchJobsAndCompanies();
   }, []);
+
+  const filteredJobs = jobs.filter((job) =>
+    job.sMaTinTuyenDung.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -73,7 +79,7 @@ export function ExpiredJob() {
               </tr>
             </thead>
             <tbody>
-              {jobs.map((job, key) => {
+              {filteredJobs.map((job, key) => {
                 const company = companies[job.sMaDoanhNghiep];
                 const className = `py-3 px-5 ${key === jobs.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 

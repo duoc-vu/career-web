@@ -7,9 +7,11 @@ import {
 import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
 import { collection, getDocs, query } from 'firebase/firestore';
+import { useAppContext } from "@/context";
 
 export function InterviewSchedule() {
   const [interviews, setInterviews] = useState([]);
+  const { searchTerm } = useAppContext();
 
   useEffect(() => {
     const fetchInterviews = async () => {
@@ -22,6 +24,10 @@ export function InterviewSchedule() {
 
     fetchInterviews();
   }, []);
+
+  const filteredInterviews = interviews.filter((interview) =>
+    interview.sMaLichHenPhongVan.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -58,7 +64,7 @@ export function InterviewSchedule() {
               </tr>
             </thead>
             <tbody>
-              {interviews.map((interview, key) => {
+              {filteredInterviews.map((interview, key) => {
                 const className = `py-3 px-5 ${key === interviews.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
                 return (

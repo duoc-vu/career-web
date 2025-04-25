@@ -1,8 +1,18 @@
-import React from "react";
 import PropTypes from "prop-types";
+import React, { createContext, useContext, useReducer, useState } from "react";
 
 export const MaterialTailwind = React.createContext(null);
 MaterialTailwind.displayName = "MaterialTailwindContext";
+const AppContext = createContext();
+export const AppProvider = ({ children }) => {
+  const [searchTerm, setSearchTerm] = useState(""); 
+
+  return (
+    <AppContext.Provider value={{ searchTerm, setSearchTerm }}>
+      {children}
+    </AppContext.Provider>
+  );
+};
 
 export function reducer(state, action) {
   switch (action.type) {
@@ -83,3 +93,4 @@ export const setFixedNavbar = (dispatch, value) =>
   dispatch({ type: "FIXED_NAVBAR", value });
 export const setOpenConfigurator = (dispatch, value) =>
   dispatch({ type: "OPEN_CONFIGURATOR", value });
+export const useAppContext = () => useContext(AppContext);

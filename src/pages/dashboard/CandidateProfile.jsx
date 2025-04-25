@@ -9,13 +9,14 @@ import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
 import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "@/context";
 
 export function CandidateProfile() {
   const [activeCandidates, setActiveCandidates] = useState([]);
   const [lockedCandidates, setLockedCandidates] = useState([]);
   const navigate = useNavigate();
+  const { searchTerm } = useAppContext();
   useEffect(() => {
-
     fetchCandidates();
   }, []);
   const fetchCandidates = async () => {
@@ -37,6 +38,14 @@ export function CandidateProfile() {
     const lockedData = lockedSnapshot.docs.map(doc => doc.data());
     setLockedCandidates(lockedData);
   };
+
+  const filteredActiveCandidates = activeCandidates.filter((candidate) =>
+    candidate.sMaUngVien.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredLockedCandidates = lockedCandidates.filter((candidate) =>
+    candidate.sMaUngVien.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const getMaUngVienByStatus = async (status) => {
     const taiKhoanCollection = collection(db, "tblTaiKhoan");
@@ -126,7 +135,7 @@ export function CandidateProfile() {
               </tr>
             </thead>
             <tbody>
-              {activeCandidates.map((candidate, key) => (
+              {filteredActiveCandidates.map((candidate, key) => (
                 <tr key={key}>
                   <td className="py-3 px-5">{candidate.sMaUngVien}</td>
                   <td className="py-3 px-5">{candidate.sHoVaTen}</td>
@@ -197,7 +206,7 @@ export function CandidateProfile() {
               </tr>
             </thead>
             <tbody>
-              {lockedCandidates.map((candidate, key) => (
+              {filteredLockedCandidates.map((candidate, key) => (
                 <tr key={key}>
                   <td className="py-3 px-5">{candidate.sMaUngVien}</td>
                   <td className="py-3 px-5">{candidate.sHoVaTen}</td>

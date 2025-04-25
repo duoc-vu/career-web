@@ -9,11 +9,13 @@ import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
 import { collection, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "@/context";
 
 export function LockedJob() {
   const [jobs, setJobs] = useState([]);
   const [companies, setCompanies] = useState({});
   const navigate = useNavigate();
+  const { searchTerm } = useAppContext();
 
   useEffect(() => {
     const fetchJobsAndCompanies = async () => {
@@ -58,6 +60,10 @@ export function LockedJob() {
     }
   };
 
+  const filteredJobs = jobs.filter((job) =>
+    job.sMaTinTuyenDung.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
@@ -94,7 +100,7 @@ export function LockedJob() {
               </tr>
             </thead>
             <tbody>
-              {jobs.map((job, key) => {
+              {filteredJobs.map((job, key) => {
                 const company = companies[job.sMaDoanhNghiep];
                 const className = `py-3 px-5 ${key === jobs.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
@@ -135,7 +141,7 @@ export function LockedJob() {
                         <Button
                           variant="outlined"
                           color="blue"
-                          size="sm" 
+                          size="sm"
                           onClick={() => navigate(`/job_detail/${job.sMaTinTuyenDung}`)}
                         >
                           Xem chi tiết
