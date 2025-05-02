@@ -8,16 +8,32 @@ import { InterviewSchedule } from "./pages/manager/InterviewSchedule";
 import LockedJob from "./pages/dashboard/LockedJob";
 import ExpiredJob from "./pages/dashboard/ExpiredJob";
 import { Feedbacks } from "./pages/manager";
-import {PrivacyOfPolicy} from "./pages/manager/PrivacyOfPolicy";
+import { PrivacyOfPolicy } from "./pages/manager/PrivacyOfPolicy";
 import { CompanyDetail } from "@/pages/details/CompanyDetail";
 import JobDetail from "./pages/details/JobDetail";
 import CandidateDetail from "./pages/details/CandidateDetail";
+import { ReportApply, ReportJob, ReportUser } from "./pages/report";
+import CompanyLicense from "./pages/details/CompanyLicense";
+import { ServerStackIcon } from "@heroicons/react/24/outline";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
 
 export const routes = [
+  // {
+  //   title: "auth pages",
+  //   layout: "auth", // Layout riêng cho trang đăng nhập
+  //   pages: [
+  //     {
+  //       icon: <UserCircleIcon {...icon} />,
+  //       name: "sign in",
+  //       path: "/sign-in",
+  //       element: <SignIn />,
+  //     },
+  //   ],
+  // },
   {
     title: "Quản lý hồ sơ",
     layout: "dashboard",
@@ -38,13 +54,17 @@ export const routes = [
         icon: <TableCellsIcon {...icon} />,
         name: "Hồ sơ doanh nghiệp",
         path: "/company_profile",
-        element: <CompanyProfile />,
+        element: (
+            <CompanyProfile />
+        ),
       },
       {
         icon: <TableCellsIcon {...icon} />,
         name: "Hồ sơ ứng viên",
         path: "/candidate_profile",
-        element: <CandidateProfile />,
+        element: (
+            <CandidateProfile />
+        ),
       },
       // {
       //   icon: <InformationCircleIcon {...icon} />,
@@ -62,19 +82,25 @@ export const routes = [
         icon: <TableCellsIcon {...icon} />,
         name: "Tin đã duyệt",
         path: "/job_approved",
-        element: <ApprovedJob />,
+        element: (
+            <ApprovedJob />
+        ),
       },
       {
         icon: <TableCellsIcon {...icon} />,
         name: "Tin Bị Khóa",
         path: "/job_locked",
-        element: <LockedJob />,
+        element: (
+            <LockedJob />
+        )
       },
       {
         icon: <TableCellsIcon {...icon} />,
         name: "Tin Đã Đóng",
         path: "/job_expired",
-        element: <ExpiredJob />,
+        element: (
+            <ExpiredJob />
+        )
       },
     ],
   },
@@ -86,7 +112,9 @@ export const routes = [
         icon: <TableCellsIcon {...icon} />,
         name: "Lịch hẹn phỏng vấn",
         path: "/interview_schedule",
-        element: <InterviewSchedule />,
+        element: (
+            <InterviewSchedule />
+        )
       },
     ],
   },
@@ -98,7 +126,9 @@ export const routes = [
         icon: <TableCellsIcon {...icon} />,
         name: "Phản hồi",
         path: "/feedback",
-        element: <Feedbacks />,
+        element: (
+            <Feedbacks />
+        )
       },
     ],
   },
@@ -110,7 +140,39 @@ export const routes = [
         icon: <TableCellsIcon {...icon} />,
         name: "Chính sách",
         path: "/privacy",
-        element: <PrivacyOfPolicy />,
+        element: (
+            <PrivacyOfPolicy />
+        )
+      },
+    ],
+  },
+  {
+    title: "Quản lý thống kê",
+    layout: "manager",
+    pages: [
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Thống kê người dùng",
+        path: "/report_user",
+        element: (
+            <ReportUser />
+        )
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Thống kê tin tuyển dụng",
+        path: "/report_job",
+        element: (
+            <ReportJob />
+        )
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Thống kê đơn ứng tuyển",
+        path: "/report_apply",
+        element: (
+            <ReportApply />
+        )
       },
     ],
   },
@@ -119,17 +181,17 @@ export const routes = [
   //   layout: "auth",
   //   pages: [
   //     {
-  //       icon: <ServerStackIcon {...icon} />,
+  //       icon: <UserCircleIcon {...icon} />,
   //       name: "sign in",
   //       path: "/sign-in",
   //       element: <SignIn />,
   //     },
-  //     {
-  //       icon: <RectangleStackIcon {...icon} />,
-  //       name: "sign up",
-  //       path: "/sign-up",
-  //       element: <SignUp />,
-  //     },
+  //     // {
+  //     //   icon: <UserCircleIcon {...icon} />,
+  //     //   name: "sign up",
+  //     //   path: "/sign-up",
+  //     //   element: <SignUp />,
+  //     // },
   //   ],
   // },
 ];
@@ -150,5 +212,15 @@ export const additionalRoutes = [
     path: "/candidate_detail/:candidateId",
     element: <CandidateDetail />,
   },
+  {
+    name: "Giấy phép kinh doanh",
+    path: "/company_license",
+    element: <CompanyLicense />,
+  },
+        {
+        name: "sign in",
+        path: "/auth/sign-in",
+        element: <SignIn />,
+      },
 ];
 export default routes;

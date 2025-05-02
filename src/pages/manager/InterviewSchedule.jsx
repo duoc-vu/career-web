@@ -3,6 +3,7 @@ import {
   CardHeader,
   CardBody,
   Typography,
+  Button,
 } from "@material-tailwind/react";
 import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
@@ -26,8 +27,16 @@ export function InterviewSchedule() {
   }, []);
 
   const filteredInterviews = interviews.filter((interview) =>
-    interview.sMaLichHenPhongVan.toLowerCase().includes(searchTerm.toLowerCase())
+    interview.sTieuDe.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
+  const totalPages = Math.ceil(filteredInterviews.length / recordsPerPage);
+
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = filteredInterviews.slice(indexOfFirstRecord, indexOfLastRecord);
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -64,7 +73,7 @@ export function InterviewSchedule() {
               </tr>
             </thead>
             <tbody>
-              {filteredInterviews.map((interview, key) => {
+              {currentRecords.map((interview, key) => {
                 const className = `py-3 px-5 ${key === interviews.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
                 return (
@@ -106,6 +115,29 @@ export function InterviewSchedule() {
           </table>
         </CardBody>
       </Card>
+      <div className="flex justify-between items-center mt-4">
+        <Button
+          size="sm"
+          variant="outlined"
+          color="blue"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Trang trước
+        </Button>
+        <Typography variant="small" className="text-blue-gray-500">
+          Trang {currentPage} / {totalPages}
+        </Typography>
+        <Button
+          size="sm"
+          variant="outlined"
+          color="blue"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Trang sau
+        </Button>
+      </div>
     </div>
   );
 }

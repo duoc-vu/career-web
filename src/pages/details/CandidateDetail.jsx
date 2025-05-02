@@ -98,7 +98,7 @@ export function CandidateDetail() {
                 <strong>Mô tả chi tiết:</strong>
               </Typography>
               {candidateData.sMoTaChiTiet.split("-").map((paragraph, index) => (
-                <Typography key={index} className="mb-2 text-blue-gray-600">
+                <Typography key={index} className="mb-2 text-blue-gray-600" style={{ whiteSpace: "pre-line" }}>
                   {paragraph.trim()}
                 </Typography>
               ))}

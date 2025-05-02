@@ -39,8 +39,16 @@ export function ExpiredJob() {
   }, []);
 
   const filteredJobs = jobs.filter((job) =>
-    job.sMaTinTuyenDung.toLowerCase().includes(searchTerm.toLowerCase())
+    job.sViTriTuyenDung.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
+  const totalPages = Math.ceil(filteredJobs.length / recordsPerPage);
+
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = filteredJobs.slice(indexOfFirstRecord, indexOfLastRecord);
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -79,9 +87,10 @@ export function ExpiredJob() {
               </tr>
             </thead>
             <tbody>
-              {filteredJobs.map((job, key) => {
+              {currentRecords.map((job, key) => {
                 const company = companies[job.sMaDoanhNghiep];
-                const className = `py-3 px-5 ${key === jobs.length - 1 ? "" : "border-b border-blue-gray-50"}`;
+                const className = `py-3 px-5 ${key === jobs.length - 1 ? "" : "border-b border-blue-gray-50"
+                  }`;
 
                 return (
                   <tr key={key}>
@@ -142,6 +151,29 @@ export function ExpiredJob() {
           </table>
         </CardBody>
       </Card>
+      <div className="flex justify-between items-center mt-4">
+        <Button
+          size="sm"
+          variant="outlined"
+          color="blue"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Trang trước
+        </Button>
+        <Typography variant="small" className="text-blue-gray-500">
+          Trang {currentPage} / {totalPages}
+        </Typography>
+        <Button
+          size="sm"
+          variant="outlined"
+          color="blue"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Trang sau
+        </Button>
+      </div>
     </div>
   );
 }

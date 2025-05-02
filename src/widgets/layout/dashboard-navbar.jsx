@@ -50,7 +50,7 @@ export function DashboardNavbar() {
             className={`bg-transparent p-0 transition-all ${fixedNavbar ? "mt-1" : ""
               }`}
           >
-            <Link to={`/${layout}`}>
+            {/* <Link to={`/${layout}`}>
               <Typography
                 variant="small"
                 color="blue-gray"
@@ -58,7 +58,7 @@ export function DashboardNavbar() {
               >
                 {layout}
               </Typography>
-            </Link>
+            </Link> */}
             <Typography
               variant="small"
               color="blue-gray"
@@ -77,7 +77,7 @@ export function DashboardNavbar() {
               type="text"
               placeholder="Tìm kiếm..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)} // Cập nhật giá trị tìm kiếm
+              onChange={(e) => setSearchTerm(e.target.value)} 
               className="w-full max-w-sm"
             />
           </div>
@@ -90,14 +90,14 @@ export function DashboardNavbar() {
             <Bars3Icon strokeWidth={3} className="h-6 w-6 text-blue-gray-500" />
           </IconButton>
           <Link to="/auth/sign-in">
-            <Button
+            {/* <Button
               variant="text"
               color="blue-gray"
               className="hidden items-center gap-1 px-4 xl:flex normal-case"
             >
               <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
               Sign In
-            </Button>
+            </Button> */}
             <IconButton
               variant="text"
               color="blue-gray"

@@ -44,10 +44,10 @@ Footer.defaultProps = {
   brandName: "Duoc Vu",
   brandLink: "https://www.creative-tim.com",
   routes: [
-    { name: "Creative Tim", path: "https://www.creative-tim.com" },
-    { name: "About Us", path: "https://www.creative-tim.com/presentation" },
+    { name: "Duoc Vũ", path: "https://www.creative-tim.com" },
+    { name: "Về chúng tôi", path: "https://www.creative-tim.com/presentation" },
     { name: "Blog", path: "https://www.creative-tim.com/blog" },
-    { name: "License", path: "https://www.creative-tim.com/license" },
+    { name: "Chính sách", path: "https://www.creative-tim.com/license" },
   ],
 };
 

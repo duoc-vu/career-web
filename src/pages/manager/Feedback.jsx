@@ -12,6 +12,50 @@ import { useAppContext } from "@/context";
 export function Feedbacks() {
   const [feedbacks, setFeedbacks] = useState([]);
   const { searchTerm } = useAppContext();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const handleOpenDialog = (feedback) => {
+    setSelectedFeedback(feedback);
+    setOpenDialog(true);
+  };
+
+  const sendEmail = async (feedback) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/reply-feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: feedback.sEmailLienHe,
+          subject: "Phản hồi của bạn đã được xử lý",
+          title: feedback.sTieuDe,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to send email");
+      }
+  
+      console.log("Email sent successfully");
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+  };
+
+  const handleConfirmAction = async () => {
+    if (!selectedFeedback) return;
+  
+    try {
+      await handleToggleStatus(selectedFeedback.id, selectedFeedback.bTrangThai);
+  
+      await sendEmail(selectedFeedback);
+  
+      setOpenDialog(false);
+    } catch (error) {
+      console.error("Lỗi khi xử lý phản hồi:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchFeedback = async () => {
@@ -29,7 +73,7 @@ export function Feedbacks() {
   }, []);
 
   const filteredFeedbacks = feedbacks.filter((feedback) =>
-    feedback.sMaPhanHoi.toLowerCase().includes(searchTerm.toLowerCase())
+    feedback.sTieuDe.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleToggleStatus = async (id, currentStatus) => {
@@ -46,7 +90,16 @@ export function Feedbacks() {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
+  const totalPages = Math.ceil(filteredFeedbacks.length / recordsPerPage);
+
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = filteredFeedbacks.slice(indexOfFirstRecord, indexOfLastRecord);
+
   return (
+    <>
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
@@ -64,7 +117,7 @@ export function Feedbacks() {
                   "Email liên hệ",
                   "Tên người gửi phản hồi",
                   "Nội dung",
-                  "Trạng thái",
+                  // "Trạng thái",
                   "Hành động",
                 ].map((el) => (
                   <th
@@ -82,7 +135,7 @@ export function Feedbacks() {
               </tr>
             </thead>
             <tbody>
-              {filteredFeedbacks.map((feedback, key) => {
+              {currentRecords.map((feedback, key) => {
                 const className = `py-3 px-5 ${key === feedback.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
                 return (
@@ -112,26 +165,27 @@ export function Feedbacks() {
                         {feedback.sNoiDung}
                       </Typography>
                     </td>
-                    <td className={className}>
+                    {/* <td className={className}>
                       <Typography
-                        className={`text-xs font-semibold ${feedback.bTrangThai
+                        className={`text-xs font-normal ${feedback.bTrangThai
                           ? "text-green-500"
                           : "text-red-500"
                           }`}
                       >
                         {feedback.bTrangThai ? "Đã xử lý" : "Chưa xử lý"}
                       </Typography>
-                    </td>
+                    </td> */}
                     <td className={className}>
                       <Button
                         size="sm"
                         variant="outlined"
-                        color={feedback.bTrangThai ? "red" : "green"}
+                        color={feedback.bTrangThai ? "green" : "red"}
+                        disabled={feedback.bTrangThai ? true : false}
                         onClick={() =>
-                          handleToggleStatus(feedback.id, feedback.bTrangThai)
+                          handleOpenDialog(feedback)
                         }
                       >
-                        {feedback.bTrangThai ? "Chưa xử lý" : "Đã xử lý"}
+                        {feedback.bTrangThai ? "Đã xử lý" : "Xác nhận"}
                       </Button>
                     </td>
                   </tr>
@@ -141,7 +195,62 @@ export function Feedbacks() {
           </table>
         </CardBody>
       </Card>
+      <div className="flex justify-between items-center mt-4">
+        <Button
+          size="sm"
+          variant="outlined"
+          color="blue"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Trang trước
+        </Button>
+        <Typography variant="small" className="text-blue-gray-500">
+          Trang {currentPage} / {totalPages}
+        </Typography>
+        <Button
+          size="sm"
+          variant="outlined"
+          color="blue"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Trang sau
+        </Button>
+      </div>
     </div>
+    {openDialog && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+      <Typography variant="h6" className="mb-4">
+        Xác nhận xử lý phản hồi
+      </Typography>
+      <Typography className="mb-4">
+        Bạn có chắc chắn muốn đánh dấu phản hồi với tiêu đề "
+        {selectedFeedback?.sTieuDe}" là đã xử lý không?
+      </Typography>
+      <div className="flex justify-end gap-2">
+        <Button
+          size="sm"
+          variant="outlined"
+          color="red"
+          onClick={() => setOpenDialog(false)}
+        >
+          Hủy
+        </Button>
+        <Button
+          size="sm"
+          variant="gradient"
+          color="green"
+          onClick={handleConfirmAction}
+        >
+          Xác nhận
+        </Button>
+      </div>
+    </div>
+  </div>
+)}
+    </>
   );
 }
 

@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
-import { IconButton } from "@material-tailwind/react";
+import { IconButton, Typography } from "@material-tailwind/react";
 import {
   Sidenav,
   DashboardNavbar,
@@ -43,6 +43,16 @@ export function Dashboard() {
                   <Route exact path={path} element={element} />
                 ))
             )}
+            <Route
+              path="*"
+              element={
+                <div className="flex items-center justify-center h-full">
+                  <Typography variant="h4" color="blue-gray">
+                    Chào mừng bạn trở lại!
+                  </Typography>
+                </div>
+              }
+            />
           </Routes>
           <div className="text-blue-gray-600">
             <Footer />
