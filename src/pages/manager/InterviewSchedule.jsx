@@ -4,58 +4,46 @@ import {
   CardBody,
   Typography,
   Button,
-  Chip
 } from "@material-tailwind/react";
 import React, { useState, useEffect } from "react";
 import { db } from '../../firebase/firebase-config';
-import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
-import { useNavigate } from "react-router-dom";
+import { collection, getDocs, query } from 'firebase/firestore';
 import { useAppContext } from "@/context";
 
-export function ExpiredJob() {
-  const [jobs, setJobs] = useState([]);
-  const [companies, setCompanies] = useState({});
-  const navigate = useNavigate();
+export function InterviewSchedule() {
+  const [interviews, setInterviews] = useState([]);
   const { searchTerm } = useAppContext();
 
   useEffect(() => {
-    const fetchJobsAndCompanies = async () => {
-      const jobsCollection = collection(db, "tblTinTuyenDung");
-      const q = query(jobsCollection, where("sCoKhoa", "==", 4));
-      const jobSnapshot = await getDocs(q);
-      const jobList = jobSnapshot.docs.map(doc => doc.data());
-      setJobs(jobList);
-
-      const companiesCollection = collection(db, "tblDoanhNghiep");
-      const companiesSnapshot = await getDocs(companiesCollection);
-      let companiesData = {};
-      companiesSnapshot.forEach(doc => {
-        companiesData[doc.data().sMaDoanhNghiep] = doc.data();
-      });
-      setCompanies(companiesData);
+    const fetchInterviews = async () => {
+      const interviewsCollection = collection(db, "tblLichHenPhongVan");
+      const q = query(interviewsCollection);
+      const interviewSnapshot = await getDocs(q);
+      const interviewList = interviewSnapshot.docs.map(doc => doc.data());
+      setInterviews(interviewList);
     };
 
-    fetchJobsAndCompanies();
+    fetchInterviews();
   }, []);
 
-  const filteredJobs = jobs.filter((job) =>
-    job.sViTriTuyenDung.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredInterviews = interviews.filter((interview) =>
+    interview.sTieuDe.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
-  const totalPages = Math.ceil(filteredJobs.length / recordsPerPage);
+  const totalPages = Math.ceil(filteredInterviews.length / recordsPerPage);
 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = filteredJobs.slice(indexOfFirstRecord, indexOfLastRecord);
+  const currentRecords = filteredInterviews.slice(indexOfFirstRecord, indexOfLastRecord);
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
           <Typography variant="h6" color="white">
-            Quản lý tin tuyển dụng đã đóng
+            Quản lý lịch hẹn phỏng vấn
           </Typography>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
@@ -63,14 +51,12 @@ export function ExpiredJob() {
             <thead>
               <tr>
                 {[
-                  "Công việc",
-                  "Vị trí tuyển dụng",
-                  "Ảnh đại diện",
-                  "Tên công ty",
-                  "Thời gian đăng bài",
-                  "Thời hạn tuyển dụng",
-                  "Trạng Thái",
-                  "Thao tác"
+                  "Mã lịch hẹn phỏng vấn",
+                  "Mã doanh nghiệp",
+                  "Mã ứng viên",
+                  "Địa điểm",
+                  "Thời gian phỏng vấn",
+                  "Tiêu đề",
                 ].map((el) => (
                   <th
                     key={el}
@@ -87,62 +73,40 @@ export function ExpiredJob() {
               </tr>
             </thead>
             <tbody>
-              {currentRecords.map((job, key) => {
-                const company = companies[job.sMaDoanhNghiep];
-                const className = `py-3 px-5 ${key === jobs.length - 1 ? "" : "border-b border-blue-gray-50"
-                  }`;
+              {currentRecords.map((interview, key) => {
+                const className = `py-3 px-5 ${key === interviews.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
                 return (
                   <tr key={key}>
                     <td className={className}>
-                      <Typography variant="small" color="blue-gray" className="font-semibold">
-                        {job.sMaTinTuyenDung}
+                      <Typography className="text-xs font-normal text-blue-gray-500">
+                        {interview.sMaLichHenPhongVan}
                       </Typography>
                     </td>
                     <td className={className}>
                       <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {job.sViTriTuyenDung}
+                        {interview.sMaDoanhNghiep}
                       </Typography>
                     </td>
                     <td className={className}>
                       <Typography className="text-xs font-normal text-blue-gray-500">
-                        {company ? <img src={company.sAnhDaiDien} alt="Avatar" className="h-10 w-10 rounded-full" /> : "No Avatar"}
+                        {interview.sMaUngVien}
+                      </Typography>
+                    </td>
+                    <td className={className}>
+                      <Typography variant="small" color="blue-gray" className="font-semibold">
+                        {interview.sDiaDiem}
                       </Typography>
                     </td>
                     <td className={className}>
                       <Typography className="text-xs font-normal text-blue-gray-500">
-                        {company ? company.sTenDoanhNghiep : "No Company Name"}
+                        {interview.sThoiGianPhongVan}
                       </Typography>
                     </td>
                     <td className={className}>
                       <Typography className="text-xs font-normal text-blue-gray-500">
-                        {job.sThoiGianDangBai}
+                        {interview.sTieuDe}
                       </Typography>
-                    </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-normal text-blue-gray-500">
-                        {job.sThoiHanTuyenDung}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                      <Chip
-                        variant="gradient"
-                        color={job.sTrangThai === "Đang tuyển" ? "green" : "red"}
-                        value={job.sTrangThai}
-                        className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                      />
-                    </td>
-                    <td className={className}>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outlined"
-                          color="blue"
-                          size="sm"
-                          onClick={() => navigate(`/job_detail/${job.sMaTinTuyenDung}`)}
-                        >
-                          Xem chi tiết
-                        </Button>
-                      </div>
                     </td>
                   </tr>
                 );
@@ -178,4 +142,4 @@ export function ExpiredJob() {
   );
 }
 
-export default ExpiredJob;
+export default InterviewSchedule;
